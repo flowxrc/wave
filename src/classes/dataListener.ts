@@ -4,22 +4,24 @@ class WaveDataListener {
     private store: WaveStore;
     private key: string;
     private refreshRateMs: number;
-    private onDataChanged: WaveDataListenerCallback;
+    private onDataChange: WaveDataListenerCallback;
     private interval?: number;
     private previousValue: any;
 
-    constructor(store: WaveStore, key: string, refreshRateMs: number, onDataChanged: WaveDataListenerCallback) {
+    constructor(store: WaveStore, key: string, refreshRateMs: number, onDataChange: WaveDataListenerCallback) {
         this.store = store;
         this.key = key;
         this.refreshRateMs = refreshRateMs;
-        this.onDataChanged = onDataChanged;
+        this.onDataChange = onDataChange;
     };
 
     public start(): void {
         if (this.interval !== undefined)
             return console.error("Failed to start WaveDataListener since it is already running!");
 
-        this.interval = setInterval(this.verifyChanges, this.refreshRateMs);
+        this.interval = setInterval(() => {
+            this.verifyChanges();
+        }, this.refreshRateMs);
     };
 
     public stop(): void {
@@ -44,14 +46,14 @@ class WaveDataListener {
 
             if (result) {
                 this.store.data[this.key] = actualValue;
-                this.onDataChanged(this.store, this.key);
+                this.onDataChange(this.key);
                 this.previousValue = actualValue;
             }
 
             return;
         }
 
-        this.onDataChanged(this.store, this.key);
+        this.onDataChange(this.key);
         this.previousValue = actualValue;
     };
  };

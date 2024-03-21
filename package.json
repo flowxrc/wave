@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "node scripts/bundler.js"
+    "bundle": "node scripts/bundler.js"
   },
   "repository": {
     "type": "git",

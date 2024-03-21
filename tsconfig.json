@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "typeRoots": ["./src/@types"],
-        "lib": ["DOM", "ES2015"],
+        "lib": ["DOM", "ES2021"],
         "strict": true,
         "allowJs": true
     },
