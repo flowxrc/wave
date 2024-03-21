@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "typeRoots": ["./src/@types"],
+        "lib": ["DOM", "ES2015"],
+        "strict": true,
+        "allowJs": true
+    },
+    "include": ["./src/**/*.ts"],
+    "exclude": ["./node_modules"]
+}

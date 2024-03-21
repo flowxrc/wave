@@ -1,7 +1,7 @@
 {
   "name": "wave",
-  "version": "1.0.8",
-  "description": "A lightweight framework for frontend development written in pure JavaScript.",
+  "version": "1.1.0",
+  "description": "An open-source, lightweight framework for frontend development.",
   "author": "flowxrc",
   "license": "MIT",
   "type": "module",
@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "colorette": "^2.0.20",
-    "esbuild": "^0.20.0",
-    "fs-jetpack": "^5.1.0"
+    "esbuild": "^0.20.2",
+    "esbuild-plugin-tsc": "^0.4.0",
+    "typescript": "^5.4.2"
   }
 }

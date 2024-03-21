@@ -1,9 +1,10 @@
 import esbuild from "esbuild";
+import esbuildPluginTsc from "esbuild-plugin-tsc";
 import * as colorette from "colorette";
 
 const logPrefix = colorette.cyanBright("[Bundler]");
 
-const inFile = "src/main.js";
+const inFile = "src/main.ts";
 const outFile = "dist/wave.js";
 const startTime = Date.now();
 
@@ -12,6 +13,7 @@ console.log(logPrefix, "Bundling", colorette.gray(inFile), "->", colorette.gray(
 try {
     esbuild.build({
         entryPoints: [inFile],
+        plugins: [esbuildPluginTsc()],
         outfile: outFile,
         bundle: true,
         format: "cjs"
