@@ -1,5 +1,3 @@
-import WaveDataListener from "./dataListener";
-
 class WaveStore {
     // TODO: Remove "any"-types
     public data: any;

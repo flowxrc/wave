@@ -1,11 +1,13 @@
+import WaveAttributes from "../extra/attributes";
 import WaveErrors from "../extra/errors";
 import WaveParser from "../extra/parser";
 import WaveDataListener from "./dataListener";
+import WaveDom from "./dom";
 import WaveStore from "./store";
 
 class WaveApp {
     private refreshRateMs: number;
-    private mountedElement?: Element;
+    private mountedDom?: WaveDom;
     private nativeStore: WaveStore;
     private store: WaveStore;
 
@@ -15,8 +17,8 @@ class WaveApp {
         this.store = this.nativeStore;
     };
 
-    public mount(selector: string) {
-        if (this.mountedElement)
+    public mount(selector: string): void {
+        if (this.mountedDom)
             return console.error(WaveErrors.alreadyMounted);
 
         const element = document.querySelector(selector);
@@ -24,21 +26,21 @@ class WaveApp {
         if (!element)
             return console.error(WaveErrors.unknownElement);
 
-        this.mountedElement = element;
+        this.mountedDom = new WaveDom(element);
         
         this.initializeMountedElement();
         this.updateConditionals();
     };
 
-    public unmount() {
-        if (!this.mountedElement)
+    public unmount(): void {
+        if (!this.mountedDom)
             return console.error(WaveErrors.notMounted);
 
         const keys = Object.keys(this.store.data);
 
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
-            const elements = this.mountedElement.querySelectorAll(`[wave-data="${key}"]`);
+            const elements = this.mountedDom.getElementsByAttribute(WaveAttributes.data, key);
 
             for (let j = 0; j < elements.length; j++)
                 elements[j].outerHTML = `{{ ${key} }}`;
@@ -52,32 +54,32 @@ class WaveApp {
             delete this.store.dataListeners[key];
         }
 
-        const conditionElements = this.mountedElement.querySelectorAll("[wave-condition]");
+        const conditionElements = this.mountedDom.getElementsByAttribute(WaveAttributes.condition);
 
         for (let i = 0; i < conditionElements.length; i++) {
             const element = conditionElements[i] as HTMLElement;
             element.style.display = "";
         }
 
-        this.mountedElement = undefined;
+        delete this.mountedDom;
     };
 
-    public useStore(store: WaveStore) {
-        if (this.mountedElement)
+    public useStore(store: WaveStore): void {
+        if (this.mountedDom)
             return console.error(WaveErrors.alreadyMounted);
 
         this.store = store;
     };
 
-    public useNativeStore() {
-        if (this.mountedElement)
+    public useNativeStore(): void {
+        if (this.mountedDom)
             return console.error(WaveErrors.alreadyMounted);
         
         this.store = this.nativeStore;
     };
 
-    private initializeMountedElement() {
-        if (!this.mountedElement)
+    private initializeMountedElement(): void {
+        if (!this.mountedDom)
             return console.error(WaveErrors.notMounted);
 
         const keys = Object.keys(this.store.data);
@@ -86,7 +88,7 @@ class WaveApp {
             const key = keys[i];
             const value = this.store.data[key];
 
-            const elements = this.mountedElement.getElementsByTagName("*");
+            const elements = this.mountedDom.getAllElements();
 
             const listener = new WaveDataListener(this.store, key, this.refreshRateMs, (changedKey: string) => { this.onDataChange(changedKey); });
             this.store.dataListeners[key] = listener;
@@ -98,16 +100,16 @@ class WaveApp {
                 if (!element.innerHTML.includes(`{{ ${key} }}`))
                     continue;
 
-                element.innerHTML = element.innerHTML.replaceAll(`{{ ${key} }}`, `<span wave-data="${key}">${value}</span>`);
+                element.innerHTML = element.innerHTML.replaceAll(`{{ ${key} }}`, `<span ${WaveAttributes.data}="${key}">${value}</span>`);
             }
         }
     };
 
-    private onDataChange(changedKey: string) {
-        if (!this.mountedElement)
+    private onDataChange(changedKey: string): void {
+        if (!this.mountedDom)
             return console.error(WaveErrors.notMounted);
 
-        const elements = this.mountedElement.querySelectorAll(`[wave-data="${changedKey}"]`);
+        const elements = this.mountedDom.getElementsByAttribute(WaveAttributes.data, changedKey);
         const value = this.store.data[changedKey];
 
         for (let j = 0; j < elements.length; j++)
@@ -116,15 +118,15 @@ class WaveApp {
         this.updateConditionals();
     };
 
-    private updateConditionals() {
-        if (!this.mountedElement)
+    private updateConditionals(): void {
+        if (!this.mountedDom)
             return console.error(WaveErrors.notMounted);
 
-        const elements = this.mountedElement.querySelectorAll("[wave-condition]");
+        const elements = this.mountedDom.getElementsByAttribute(WaveAttributes.condition);
 
         for (let i = 0; i < elements.length; i++) {
             const element = elements[i] as HTMLElement;
-            const attribute = element.getAttribute("wave-condition");
+            const attribute = element.getAttribute(WaveAttributes.condition);
 
             if (!attribute)
                 continue;
