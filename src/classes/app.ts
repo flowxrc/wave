@@ -1,9 +1,9 @@
-import WaveAttributes from "../extra/attributes";
-import WaveErrors from "../extra/errors";
-import WaveParser from "../extra/parser";
-import WaveDataListener from "./dataListener";
-import WaveDom from "./dom";
-import WaveStore from "./store";
+import WaveAttributes from "../extra/attributes.ts";
+import WaveErrors from "../extra/errors.ts";
+import WaveParser from "../extra/parser.ts";
+import WaveDataListener from "./dataListener.ts";
+import WaveDom from "./dom.ts";
+import WaveStore from "./store.ts";
 
 class WaveApp {
     private refreshRateMs: number;

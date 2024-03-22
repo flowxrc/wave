@@ -1,5 +1,5 @@
-import WaveErrors from "../extra/errors";
-import WaveStore from "./store";
+import WaveErrors from "../extra/errors.ts";
+import WaveStore from "./store.ts";
 
 class WaveDataListener {
     private store: WaveStore;

@@ -1,5 +1,5 @@
-import WaveStore from "../classes/store";
-import WaveRuntimeStore from "../runtimeStore";
+import WaveStore from "../classes/store.ts";
+import WaveRuntimeStore from "../runtimeStore.ts";
 
 const WaveParser = {
     parseArgument: (argument: string, store: WaveStore) => {

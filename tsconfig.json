@@ -3,7 +3,7 @@
         "typeRoots": ["./src/@types"],
         "lib": ["DOM", "ES2021"],
         "strict": true,
-        "allowJs": true
+        "allowImportingTsExtensions": true
     },
     "include": ["./src/**/*.ts"],
     "exclude": ["./node_modules"]

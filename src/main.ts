@@ -1,6 +1,6 @@
-import WaveApp from "./classes/app";
-import WaveLogicalOperator from "./classes/logicalOperator";
-import WaveRuntimeStore from "./runtimeStore";
+import WaveApp from "./classes/app.ts";
+import WaveLogicalOperator from "./classes/logicalOperator.ts";
+import WaveRuntimeStore from "./runtimeStore.ts";
 
 function initializeLogicalOperators() {
     WaveRuntimeStore.logicalOperators.push(new WaveLogicalOperator(" = ", (data, compareWith) => {
@@ -27,4 +27,4 @@ function initializeLogicalOperators() {
 initializeLogicalOperators();
 
 // For bundling
-new WaveApp();
+export default WaveApp;

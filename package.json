@@ -6,7 +6,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "compile": "node scripts/compiler.js",
     "bundle": "node scripts/bundler.js",
+    "test": "node scripts/test.js",
     "declaration": "tsc --emitDeclarationOnly --traceResolution --declaration src/main.ts --declarationDir declaration"
   },
   "repository": {
@@ -14,9 +16,11 @@
     "url": "https://github.com/flowxrc/wave"
   },
   "devDependencies": {
+    "@gjsify/esbuild-plugin-transform-ext": "^0.0.4",
     "colorette": "^2.0.20",
     "esbuild": "^0.20.2",
     "esbuild-plugin-tsc": "^0.4.0",
+    "glob": "^10.3.10",
     "typescript": "^5.4.2"
   }
 }
