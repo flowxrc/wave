@@ -1,3 +1,5 @@
+import WaveErrors from "../extra/errors";
+import WaveParser from "../extra/parser";
 import WaveDataListener from "./dataListener";
 import WaveStore from "./store";
 
@@ -15,35 +17,68 @@ class WaveApp {
 
     public mount(selector: string) {
         if (this.mountedElement)
-            return console.error("Failed to mount app since it is already mounted!");
+            return console.error(WaveErrors.alreadyMounted);
 
         const element = document.querySelector(selector);
 
         if (!element)
-            return console.error("Failed to mount app since the element was not found!");
+            return console.error(WaveErrors.unknownElement);
 
         this.mountedElement = element;
         
         this.initializeMountedElement();
+        this.updateConditionals();
+    };
+
+    public unmount() {
+        if (!this.mountedElement)
+            return console.error(WaveErrors.notMounted);
+
+        const keys = Object.keys(this.store.data);
+
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const elements = this.mountedElement.querySelectorAll(`[wave-data="${key}"]`);
+
+            for (let j = 0; j < elements.length; j++)
+                elements[j].outerHTML = `{{ ${key} }}`;
+
+            const listener = this.store.dataListeners[key];
+
+            if (!listener)
+                continue;
+
+            listener.stop();
+            delete this.store.dataListeners[key];
+        }
+
+        const conditionElements = this.mountedElement.querySelectorAll("[wave-condition]");
+
+        for (let i = 0; i < conditionElements.length; i++) {
+            const element = conditionElements[i] as HTMLElement;
+            element.style.display = "";
+        }
+
+        this.mountedElement = undefined;
     };
 
     public useStore(store: WaveStore) {
         if (this.mountedElement)
-            return console.error("Cannot change store when the app has been mounted!");
+            return console.error(WaveErrors.alreadyMounted);
 
         this.store = store;
     };
 
     public useNativeStore() {
         if (this.mountedElement)
-            return console.error("Cannot change store when the app has been mounted!");
+            return console.error(WaveErrors.alreadyMounted);
         
         this.store = this.nativeStore;
     };
 
     private initializeMountedElement() {
         if (!this.mountedElement)
-            return console.error("App is not mounted!");
+            return console.error(WaveErrors.notMounted);
 
         const keys = Object.keys(this.store.data);
 
@@ -70,14 +105,35 @@ class WaveApp {
 
     private onDataChange(changedKey: string) {
         if (!this.mountedElement)
-            return console.error("App is not mounted!");
+            return console.error(WaveErrors.notMounted);
 
         const elements = this.mountedElement.querySelectorAll(`[wave-data="${changedKey}"]`);
         const value = this.store.data[changedKey];
 
         for (let j = 0; j < elements.length; j++)
             elements[j].innerHTML = value;
-    }
+
+        this.updateConditionals();
+    };
+
+    private updateConditionals() {
+        if (!this.mountedElement)
+            return console.error(WaveErrors.notMounted);
+
+        const elements = this.mountedElement.querySelectorAll("[wave-condition]");
+
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i] as HTMLElement;
+            const attribute = element.getAttribute("wave-condition");
+
+            if (!attribute)
+                continue;
+
+            const conditionsMet = WaveParser.parseCondition(attribute, this.store);
+
+            element.style.display = conditionsMet ? "" : "none";
+        }
+    };
 };
 
 export default WaveApp;

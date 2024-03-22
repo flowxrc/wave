@@ -10,7 +10,7 @@ class WaveStore {
         this.data = options.data || {};
         this.proxies = options.proxies || {};
         this.dataListeners = {};
-    }
+    };
 
     public isEmpty(): boolean {
         return Object.keys(this.data).length === 0 && Object.keys(this.proxies).length === 0;

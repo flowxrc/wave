@@ -1,3 +1,4 @@
+import WaveErrors from "../extra/errors";
 import WaveStore from "./store";
 
 class WaveDataListener {
@@ -17,7 +18,7 @@ class WaveDataListener {
 
     public start(): void {
         if (this.interval !== undefined)
-            return console.error("Failed to start WaveDataListener since it is already running!");
+            return console.error(WaveErrors.alreadyListening);
 
         this.interval = setInterval(() => {
             this.verifyChanges();
@@ -26,7 +27,7 @@ class WaveDataListener {
 
     public stop(): void {
         if (this.interval === undefined)
-            return console.error("Failed to stop WaveDataListener since it is not running!");
+            return console.error(WaveErrors.notListening);
 
         clearInterval(this.interval);
     };

@@ -6,7 +6,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "bundle": "node scripts/bundler.js"
+    "bundle": "node scripts/bundler.js",
+    "declaration": "tsc --emitDeclarationOnly --traceResolution --declaration src/main.ts --declarationDir declaration"
   },
   "repository": {
     "type": "git",
